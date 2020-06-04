@@ -1,9 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutterexperiments/common/app_strings.dart';
+import 'package:flutter_experiments/experiments/recursive_routing/app_strings.dart';
 
-class RecursiveRoutingScreen extends StatelessWidget {
+/// Overflow menu items enumeration.
+enum MenuAction { home }
+
+class RecursiveRoutingScreen extends StatefulWidget {
   const RecursiveRoutingScreen(
     this.depth, {
     Key key,
@@ -12,18 +13,54 @@ class RecursiveRoutingScreen extends StatelessWidget {
 
   final int depth;
 
-  void goDeep(BuildContext context) {
+  @override
+  _RecursiveRoutingScreenState createState() => _RecursiveRoutingScreenState();
+}
+
+class _RecursiveRoutingScreenState extends State<RecursiveRoutingScreen> {
+  int _counter = 0;
+
+  Color _counterColor = Colors.black26;
+
+  @override
+  void initState() {
+    _counter = widget.depth;
+    super.initState();
+  }
+
+  void _goDeep(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecursiveRoutingScreen(depth + 1),
+        builder: (context) => RecursiveRoutingScreen(widget.depth + 1),
       ),
     );
   }
 
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+      _counterColor = Colors.black;
+    });
+  }
+
+  void _goHome(BuildContext context) {
+    Navigator.popUntil(context, (route) => route.isFirst);
+  }
+
+  /// Performs the tasks of the popup menu items (home).
+  void popupMenuSelection(MenuAction item) {
+    switch (item) {
+      case MenuAction.home:
+        // Go home to the app dashboard.
+        _goHome(context);
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Color color = Colors.primaries[(depth - 1) % Colors.primaries.length];
+    Color color = Colors.primaries[(widget.depth - 1) % Colors.primaries.length];
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -31,18 +68,32 @@ class RecursiveRoutingScreen extends StatelessWidget {
         colorScheme: Theme.of(context).colorScheme.copyWith(secondary: color),
       ),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('${AppStrings.recursiveRoutingTitle} $depth'),
-        ),
+        appBar: AppBar(title: Text('${AppStrings.screenTitle} ${widget.depth}'), actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_circle),
+            tooltip: AppStrings.addTooltip,
+            onPressed: _incrementCounter,
+          ),
+          PopupMenuButton<MenuAction>(
+            onSelected: popupMenuSelection,
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: MenuAction.home,
+                child: Text(AppStrings.goHomeTitle),
+              ),
+            ],
+          ),
+        ]),
         body: Center(
           child: Text(
-            '$depth',
-            style: Theme.of(context).textTheme.headline1.copyWith(color: Colors.black),
+            '$_counter',
+            style: Theme.of(context).textTheme.headline1.copyWith(color: _counterColor),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.refresh),
-          onPressed: () => goDeep(context),
+        floatingActionButton: FloatingActionButton.extended(
+          icon: const Icon(Icons.arrow_drop_down_circle),
+          label: Text(AppStrings.goDeeperTitle),
+          onPressed: () => _goDeep(context),
         ),
       ),
     );

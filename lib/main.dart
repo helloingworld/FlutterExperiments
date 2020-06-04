@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterexperiments/common/app_strings.dart';
-import 'package:flutterexperiments/dashboard/dashboard_screen.dart';
-import 'package:flutterexperiments/experiments/recursive_routing/recursive_routing_screen.dart';
+import 'package:flutter_experiments/common/app_strings.dart';
+import 'package:flutter_experiments/dashboard/dashboard_screen.dart';
 
 void main() {
   runApp(RecursiveRoutingApp());

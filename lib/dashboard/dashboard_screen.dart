@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterexperiments/common/app_strings.dart';
-import 'package:flutterexperiments/experiments/recursive_routing/recursive_routing_screen.dart';
+import 'package:flutter_experiments/common/app_strings.dart';
+import 'package:flutter_experiments/experiments/recursive_routing/recursive_routing_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -11,7 +11,11 @@ class DashboardScreen extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          makeDashboardItem(context, 'Recursive Routing', (context) => RecursiveRoutingScreen(1)),
+          makeDashboardItem(
+            context,
+            AppStrings.recursiveRoutingTitle,
+            (context) => RecursiveRoutingScreen(1),
+          ),
         ],
       ),
     );
